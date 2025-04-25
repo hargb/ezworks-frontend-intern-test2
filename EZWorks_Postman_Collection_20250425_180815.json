@@ -1,0 +1,39 @@
+{
+  "info": {
+    "name": "EZWorks Collection",
+    "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab",
+    "description": "Postman collection for submitting EZWorks form",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Submit EZWorks Form",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"phone_no\": \"9871742708\",\n  \"country_code\": \"+91\",\n  \"is_whatsapp\": true,\n  \"promotion\": true,\n  \"message\": \"Hello from frontend\",\n  \"service\": [\n    \"Graphics & Video\"\n  ]\n}"
+        },
+        "url": {
+          "raw": "https://test.ezworks.ai/form-api",
+          "protocol": "https",
+          "host": [
+            "test",
+            "ezworks",
+            "ai"
+          ],
+          "path": [
+            "form-api"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
