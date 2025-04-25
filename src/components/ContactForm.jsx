@@ -20,7 +20,6 @@ export default function ContactForm() {
   const [phone, setPhone] = useState("");
   const [selectedService, setSelectedService] = useState(services[0]);
   const [loading, setLoading] = useState(false);
-  
 
   const {
     register,
@@ -30,18 +29,24 @@ export default function ContactForm() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const cleanedPhone = phone.replace(/[^0-9]/g, ""); // removes -, spaces etc.
-    const formattedPhone = `+${cleanedPhone}`;
+    // Extract + format phone parts
+    const cleanedPhone = phone.replace(/[^0-9]/g, "");
+    const phone_no = cleanedPhone.slice(-10);
+    const country_code = "+" + cleanedPhone.slice(0, cleanedPhone.length - 10);
 
+    // Final payload
     const payload = {
       name: data.name.trim(),
       email: data.email.trim(),
-      phone: formattedPhone,
+      phone_no,
+      country_code,
+      is_whatsapp: true,
+      promotion: true, // required field
       message: data.message.trim(),
-      service: selectedService ? [selectedService]: ["Graphics & Video"],
+      service: [selectedService.trim()],
     };
 
-    console.log("Payload to send:", payload); // 🧪 Debug log
+    console.log("🚀 Payload to send:", payload);
 
     try {
       setLoading(true);
@@ -54,31 +59,25 @@ export default function ContactForm() {
       });
 
       const result = await res.json();
-console.log("API Response:", result);
+      console.log("✅ API Response:", result);
 
-if (!res.ok) {
-  if (result?.detail) {
-    console.table(result.detail); // 👈 Log backend validation errors
-    toast.error("Validation error. Check console for details.");
-  } else {
-    toast.error(result?.message || "Submission failed.");
-  }
-  return;
-}
-
-      
-
-      if (res.ok) {
-        toast.success("Form submitted successfully!");
-        reset();
-        setPhone("");
-        setSelectedService(services[0]);
-      } else {
-        toast.error(result?.message || "Submission failed. Please try again.");
+      if (!res.ok) {
+        if (result?.detail) {
+          console.table(result.detail);
+          toast.error("Validation failed. See console.");
+        } else {
+          toast.error(result?.message || "Submission failed.");
+        }
+        return;
       }
+
+      toast.success("Form submitted successfully!");
+      reset();
+      setPhone("");
+      setSelectedService(services[0]);
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Network error. Try again later.");
+      console.error("❌ Network Error:", error);
+      toast.error("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
